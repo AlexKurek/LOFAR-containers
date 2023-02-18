@@ -1,2 +1,2 @@
 # LOFAR containers
- LOFAR related Singularity containers
+Singularity containers related to LOFAR
