@@ -69,6 +69,8 @@ From: debian:bullseye
    pip3 install reproject
    pip3 install sklearn
    export SRC=/usr/local/src
+   
+   # tested: using ninja and shallow cloning does not speed up the build
 
    # PyBDSF
    pip3 install git+https://github.com/lofar-astron/PyBDSF.git
@@ -126,13 +128,23 @@ From: debian:bullseye
    make -j $J
    make install
 
+   # SAGECal libdirac
+   cd $SRC
+   git clone https://github.com/nlesc-dirac/sagecal.git
+   cd sagecal
+   mkdir build
+   cd build
+   cmake .. -DLIB_ONLY=1
+   make -j $J
+   make install
+
    # DP3
    cd $SRC
    git clone https://github.com/lofar-astron/DP3.git
    cd DP3
    mkdir build
    cd build
-   cmake .. -DCMAKE_PREFIX_PATH=/usr/local/idg/
+   cmake .. -DLIBDIRAC_PREFIX=/usr/ -DCMAKE_PREFIX_PATH=/usr/local/idg/
    make -j $J
    make install
 
@@ -209,4 +221,4 @@ From: debian:bullseye
   apt-get -y autoremove
   rm -rf /var/lib/apt/lists/*
   
-  bash -c "rm -rf /usr/local/src/{DP3,EveryBeam,LOFARBeam,aoflagger,dysco,idg,wsclean,PyBDSF,SpiderScripts}/" # DDFacet,killMS
+  bash -c "rm -rf /usr/local/src/{DP3,EveryBeam,LOFARBeam,aoflagger,dysco,idg,wsclean,PyBDSF,SpiderScripts,sagecal}/" # DDFacet,killMS
