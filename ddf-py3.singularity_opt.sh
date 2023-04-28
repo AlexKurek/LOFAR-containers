@@ -24,7 +24,6 @@ From: debian:bullseye
     rsync \
     python3-pip \
     libfftw3-dev \
-    python3-numpy \
     libfreetype6-dev \
     libpng-dev \
     pkg-config \
@@ -65,12 +64,10 @@ From: debian:bullseye
 
    pip3 install pybind11
    pip3 install dask codex_africanus ephem Polygon3 pyfits pyregion terminal pyephem ptyprocess timeout-decorator astroquery
-   pip3 install --ignore-installed numpy==1.19.5
+   pip3 install --ignore-installed numpy==1.19.5 --no-cache-dir # python -c "import numpy; print(numpy.version.version)"
    pip3 install reproject
-   pip3 install sklearn
+   pip3 install sklearn tqdm
    export SRC=/usr/local/src
-   
-   # tested: using ninja and shallow cloning does not speed up the build
 
    # PyBDSF
    pip3 install git+https://github.com/lofar-astron/PyBDSF.git
@@ -103,6 +100,9 @@ From: debian:bullseye
    # IDG -- for wsclean and DP3
    cd $SRC
    git clone https://gitlab.com/astron-idg/idg.git
+   cd idg
+   git checkout f4a3a96c # Hotfix for DP3 tec
+   cd ..
    cd idg && mkdir build && cd build
    cmake -DCMAKE_INSTALL_PREFIX=/usr/local/idg/ ..
    make -j $J
@@ -158,6 +158,7 @@ From: debian:bullseye
    pip3 install pyavm
    pip3 install imageio==2.14.1
    pip3 install aplpy
+   pip3 install --ignore-installed numpy==1.19.5 --no-cache-dir # aplpy is upgrading numpy, so rolling it back
 
   # wsclean latest -- for selfcal
    cd $SRC
@@ -212,7 +213,7 @@ From: debian:bullseye
   cd /usr/local/src
   git clone https://github.com/sara-nl/SpiderScripts.git
   cd SpiderScripts
-  cp ada/ada /usr/local/bin
+  cp ada/ada /usr/local/bi
 
   pip3 list --format=columns
 
