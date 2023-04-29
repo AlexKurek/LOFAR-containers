@@ -8,8 +8,8 @@ From: debian:bullseye
    export DDF_PIPELINE_CATALOGS=$SRC/catalogs/
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/:/usr/local/idg/lib/
 
-%files
-   /home/akurek/ddf-pipeline-mod/ /home/akurek/ddf-pipeline/
+# %files
+   # /home/akurek/ddf-pipeline-mod/ /home/akurek/ddf-pipeline/
 
 %post
    export DEBIAN_FRONTEND=noninteractive
@@ -62,16 +62,16 @@ From: debian:bullseye
    apt-get install -y casacore-dev casacore-tools python3-casacore cmake curl
    apt-get install -y python3-astlib python3-ipdb python3-nose python3-metaconfig jq util-linux bsdmainutils
 
-   pip3 install pybind11
-   pip3 install dask codex_africanus ephem Polygon3 pyfits pyregion terminal pyephem ptyprocess timeout-decorator astroquery
-   pip3 install --ignore-installed numpy==1.21.6 # python -c "import numpy; print(numpy.version.version)"
-   pip3 install reproject
-   # pip3 install scikit-learn tqdm # scikit-learn is installed by apt / libboost 
-   pip3 install tqdm
+   pip install pybind11
+   pip install dask codex_africanus ephem Polygon3 pyfits pyregion terminal pyephem ptyprocess timeout-decorator astroquery
+   pip install --ignore-installed numpy==1.21.6 # python -c "import numpy; print(numpy.version.version)"
+   pip install reproject
+   # pip install scikit-learn tqdm # scikit-learn is installed by apt / libboost 
+   pip install tqdm
    export SRC=/usr/local/src
 
    # PyBDSF
-   pip3 install git+https://github.com/lofar-astron/PyBDSF.git
+   pip install git+https://github.com/lofar-astron/PyBDSF.git
 
    # LOFAR beam -- for DDF
    cd $SRC
@@ -136,7 +136,7 @@ From: debian:bullseye
    mkdir build
    cd build
    # https://en.wikichip.org/wiki/intel/xeon_gold/6238
-   cmake .. -DLIB_ONLY=1 -Wno-dev -DCMAKE_CXX_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -mavx2 -mavx512f' -DCMAKE_C_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -mavx2 -mavx512f'
+   cmake .. -DLIB_ONLY=1 -Wno-dev -DCMAKE_CXX_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -mavx2 -mavx512f' -DCMAKE_C_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -mavx2 -mavx512f' # mavx512f makes the .sif file larger by ~2GB
    make -j $J
    make install
 
@@ -154,17 +154,17 @@ From: debian:bullseye
    make install
 
    # few more DDF dependencies
-   pip3 install -U tables prettytable pylru emcee astropy_healpix sharedarray
+   pip install -U tables prettytable pylru emcee astropy_healpix sharedarray
 
    # losoto -- for selfcal
-   pip3 install losoto
+   pip install losoto
 
    # APLpy -- for selfcal
-   pip3 install pyavm
-   # pip3 install imageio==2.14.1
-   pip3 install imageio
-   pip3 install aplpy
-   # pip3 install --ignore-installed numpy==1.21.6 # aplpy is upgrading numpy, so rolling it back
+   pip install pyavm
+   # pip install imageio==2.14.1
+   pip install imageio
+   pip install aplpy
+   # pip install --ignore-installed numpy==1.21.6 # aplpy is upgrading numpy, so rolling it back
 
   # wsclean latest -- for selfcal
    cd $SRC
@@ -221,9 +221,10 @@ From: debian:bullseye
   cd SpiderScripts
   cp ada/ada /usr/local/bi
 
-  pip3 list
 
-  pip3 cache purge
+  pip list
+
+  pip cache purge
   apt-get purge -y cmake
   apt-get -y autoremove
   rm -rf /var/lib/apt/lists/*
