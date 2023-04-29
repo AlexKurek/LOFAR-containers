@@ -64,9 +64,10 @@ From: debian:bullseye
 
    pip3 install pybind11
    pip3 install dask codex_africanus ephem Polygon3 pyfits pyregion terminal pyephem ptyprocess timeout-decorator astroquery
-   pip3 install --ignore-installed numpy==1.19.5 --no-cache-dir # python -c "import numpy; print(numpy.version.version)"
+   pip3 install --ignore-installed numpy==1.21.1 --no-cache-dir # python -c "import numpy; print(numpy.version.version)"
    pip3 install reproject
-   pip3 install sklearn tqdm
+   # pip3 install scikit-learn tqdm # scikit-learn is installed by apt / libboost 
+   pip3 install tqdm
    export SRC=/usr/local/src
 
    # PyBDSF
@@ -142,6 +143,9 @@ From: debian:bullseye
    cd $SRC
    git clone https://github.com/lofar-astron/DP3.git
    cd DP3
+   git checkout 5dab4c43 # https://github.com/rvweeren/lofar_facet_selfcal/issues/65#issuecomment-1510280940
+   cd ..
+   cd DP3
    mkdir build
    cd build
    cmake .. -DLIBDIRAC_PREFIX=/usr/ -DCMAKE_PREFIX_PATH=/usr/local/idg/
@@ -156,9 +160,10 @@ From: debian:bullseye
 
    # APLpy -- for selfcal
    pip3 install pyavm
-   pip3 install imageio==2.14.1
+   # pip3 install imageio==2.14.1
+   pip3 install imageio
    pip3 install aplpy
-   pip3 install --ignore-installed numpy==1.19.5 --no-cache-dir # aplpy is upgrading numpy, so rolling it back
+   pip3 install --ignore-installed numpy==1.21.1 --no-cache-dir # aplpy is upgrading numpy, so rolling it back
 
   # wsclean latest -- for selfcal
    cd $SRC
