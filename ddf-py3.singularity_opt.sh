@@ -64,7 +64,7 @@ From: debian:bullseye
 
    pip3 install pybind11
    pip3 install dask codex_africanus ephem Polygon3 pyfits pyregion terminal pyephem ptyprocess timeout-decorator astroquery
-   pip3 install --ignore-installed numpy==1.21.1 --no-cache-dir # python -c "import numpy; print(numpy.version.version)"
+   pip3 install --ignore-installed numpy==1.21.6 # python -c "import numpy; print(numpy.version.version)"
    pip3 install reproject
    # pip3 install scikit-learn tqdm # scikit-learn is installed by apt / libboost 
    pip3 install tqdm
@@ -135,7 +135,8 @@ From: debian:bullseye
    cd sagecal
    mkdir build
    cd build
-   cmake .. -DLIB_ONLY=1
+   # https://en.wikichip.org/wiki/intel/xeon_gold/6238
+   cmake .. -DLIB_ONLY=1 -Wno-dev -DCMAKE_CXX_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -mavx2 -mavx512f' -DCMAKE_C_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -mavx2 -mavx512f'
    make -j $J
    make install
 
@@ -163,7 +164,7 @@ From: debian:bullseye
    # pip3 install imageio==2.14.1
    pip3 install imageio
    pip3 install aplpy
-   pip3 install --ignore-installed numpy==1.21.1 --no-cache-dir # aplpy is upgrading numpy, so rolling it back
+   # pip3 install --ignore-installed numpy==1.21.6 # aplpy is upgrading numpy, so rolling it back
 
   # wsclean latest -- for selfcal
    cd $SRC
@@ -177,37 +178,37 @@ From: debian:bullseye
 
   # DDFacet
   cd $SRC
-  git clone -b v0.6.0 https://github.com/saopicc/DDFacet.git
+  git clone --depth 1 -b v0.6.0 https://github.com/saopicc/DDFacet.git
   cd DDFacet
   python setup.py install
 
   # killMS
   cd $SRC
-  git clone -b v3.0.1 https://github.com/saopicc/killMS.git
+  git clone --depth 1 -b v3.0.1 https://github.com/saopicc/killMS.git
   cd killMS
   python setup.py install
 
   # dynspecMS
   cd $SRC
-  git clone https://github.com/cyriltasse/DynSpecMS.git
+  git clone --depth 1 https://github.com/cyriltasse/DynSpecMS.git
 
   # lotss-query
   cd $SRC
-  git clone https://github.com/mhardcastle/lotss-query.git
+  git clone --depth 1 https://github.com/mhardcastle/lotss-query.git
 
   # lotss-hba-survey (not needed for most users)
   cd $SRC
-  git clone https://github.com/mhardcastle/lotss-hba-survey.git
+  git clone --depth 1 https://github.com/mhardcastle/lotss-hba-survey.git
 
   # ddf-pipeline
   cd $SRC
-  git clone https://github.com/mhardcastle/ddf-pipeline.git
+  git clone --depth 1 https://github.com/mhardcastle/ddf-pipeline.git
   # create the init script
   ddf-pipeline/scripts/install.sh
   # catalogs
   mkdir -p $SRC/catalogs/
   cd $SRC/catalogs/
-  wget -q --retry-connrefused http://www.oa.uj.edu.pl/A.Kurek/bootstrap-cats.tar
+  wget -q --retry-connrefused http://www.oa.uj.edu.pl/A.Kurek/bootstrap-cats.tar # https://github.com/tikk3r/flocs/blob/fedora-py3/singularity/Singularity.intel_mkl#L592
   tar xvf bootstrap-cats.tar
   rm -f bootstrap-cats.tar
 
@@ -220,7 +221,7 @@ From: debian:bullseye
   cd SpiderScripts
   cp ada/ada /usr/local/bi
 
-  pip3 list --format=columns
+  pip3 list
 
   pip3 cache purge
   apt-get purge -y cmake
