@@ -14,7 +14,7 @@ From: debian:bullseye
 %post
    export DEBIAN_FRONTEND=noninteractive
    export J=16
-   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/:/usr/local/idg/lib/
+   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 
    echo "Here we are installing software and other dependencies for the container!"
    apt-get update
@@ -64,7 +64,7 @@ From: debian:bullseye
 
    pip install pybind11
    pip install dask codex_africanus ephem Polygon3 pyfits pyregion terminal pyephem ptyprocess timeout-decorator astroquery
-   pip install --ignore-installed numpy==1.21.6 # python -c "import numpy; print(numpy.version.version)"
+   pip install --ignore-installed numpy==1.22.4 # python -c "import numpy; print(numpy.version.version)"
    pip install reproject
    # pip install scikit-learn tqdm # scikit-learn is installed by apt / libboost 
    pip install tqdm
@@ -93,7 +93,7 @@ From: debian:bullseye
    # git checkout 3fd7a5fd17f3d09db89ad7827c9bdc4febf66eff
    mkdir build
    cd build
-   cmake ../
+   cmake ..
    make -j $J
    make install
    cp $SRC/dysco/build/decompress /usr/local/bin/decompress  # https://github.com/aroffringa/dysco/issues/12#issuecomment-773134161
@@ -105,7 +105,7 @@ From: debian:bullseye
    git checkout f4a3a96c # Hotfix for DP3 tec
    cd ..
    cd idg && mkdir build && cd build
-   cmake -DCMAKE_INSTALL_PREFIX=/usr/local/idg/ ..
+   cmake ..
    make -j $J
    make install
 
@@ -149,7 +149,7 @@ From: debian:bullseye
    cd DP3
    mkdir build
    cd build
-   cmake .. -DLIBDIRAC_PREFIX=/usr/ -DCMAKE_PREFIX_PATH=/usr/local/idg/
+   cmake .. -DLIBDIRAC_PREFIX=/usr/
    make -j $J
    make install
 
@@ -172,7 +172,7 @@ From: debian:bullseye
    cd wsclean
    mkdir -p build
    cd build
-   cmake .. -DCMAKE_PREFIX_PATH=/usr/local/idg/
+   cmake ..
    make -j $J
    make install
 
