@@ -58,15 +58,16 @@ From: debian:bullseye
     libgsl-dev \
     libgtkmm-3.0-dev \
     libcfitsio-bin libxml2-dev libarmadillo-dev libsigc++-2.0-dev liblua5.3-dev    
-   update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
    apt-get install -y casacore-dev casacore-tools python3-casacore cmake curl
    apt-get install -y python3-astlib python3-ipdb python3-nose python3-metaconfig jq util-linux bsdmainutils
+
+   update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
 
    pip install pybind11
    pip install dask codex_africanus ephem Polygon3 pyfits pyregion terminal pyephem ptyprocess timeout-decorator astroquery
    pip install --ignore-installed numpy==1.22.4 # python -c "import numpy; print(numpy.version.version)"
    pip install reproject
-   # pip install scikit-learn tqdm # scikit-learn is installed by apt / libboost 
+   # pip install scikit-learn tqdm # scikit-learn (foromer sklearn) is installed by apt / libboost 
    pip install tqdm
    export SRC=/usr/local/src
 
@@ -135,8 +136,10 @@ From: debian:bullseye
    cd sagecal
    mkdir build
    cd build
-   # https://en.wikichip.org/wiki/intel/xeon_gold/6238
-   cmake .. -DLIB_ONLY=1 -Wno-dev -DCMAKE_CXX_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -mavx2 -mavx512f' -DCMAKE_C_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -mavx2 -mavx512f' # mavx512f makes the .sif file larger by ~2GB
+   # https://en.wikichip.org/wiki/intel/xeon_gold/6238 cascadelake
+   # https://www.cpu-world.com/CPUs/Xeon/Intel-Xeon%20E5-2640.html ivybridge
+   # https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
+   cmake .. -DLIB_ONLY=1 -Wno-dev -DCMAKE_CXX_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -march=cascadelake -mtune=cascadelake' -DCMAKE_C_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -march=cascadelake -mtune=cascadelake'
    make -j $J
    make install
 
@@ -166,7 +169,7 @@ From: debian:bullseye
    pip install aplpy
    # pip install --ignore-installed numpy==1.21.6 # aplpy is upgrading numpy, so rolling it back
 
-  # wsclean latest -- for selfcal
+   # wsclean latest -- for selfcal
    cd $SRC
    git clone https://gitlab.com/aroffringa/wsclean.git
    cd wsclean
@@ -176,57 +179,58 @@ From: debian:bullseye
    make -j $J
    make install
 
-  # DDFacet
-  cd $SRC
-  git clone --depth 1 -b v0.6.0 https://github.com/saopicc/DDFacet.git
-  cd DDFacet
-  python setup.py install
-
-  # killMS
-  cd $SRC
-  git clone --depth 1 -b v3.0.1 https://github.com/saopicc/killMS.git
-  cd killMS
-  python setup.py install
-
-  # dynspecMS
-  cd $SRC
-  git clone --depth 1 https://github.com/cyriltasse/DynSpecMS.git
-
-  # lotss-query
-  cd $SRC
-  git clone --depth 1 https://github.com/mhardcastle/lotss-query.git
-
-  # lotss-hba-survey (not needed for most users)
-  cd $SRC
-  git clone --depth 1 https://github.com/mhardcastle/lotss-hba-survey.git
-
-  # ddf-pipeline
-  cd $SRC
-  git clone --depth 1 https://github.com/mhardcastle/ddf-pipeline.git
-  # create the init script
-  ddf-pipeline/scripts/install.sh
-  # catalogs
-  mkdir -p $SRC/catalogs/
-  cd $SRC/catalogs/
-  wget -q --retry-connrefused http://www.oa.uj.edu.pl/A.Kurek/bootstrap-cats.tar # https://github.com/tikk3r/flocs/blob/fedora-py3/singularity/Singularity.intel_mkl#L592
-  tar xvf bootstrap-cats.tar
-  rm -f bootstrap-cats.tar
-
-  cd /usr/local/src
-  wget https://rclone.org/install.sh
-  bash install.sh
-
-  cd /usr/local/src
-  git clone https://github.com/sara-nl/SpiderScripts.git
-  cd SpiderScripts
-  cp ada/ada /usr/local/bi
-
-
-  pip list
-
-  pip cache purge
-  apt-get purge -y cmake
-  apt-get -y autoremove
-  rm -rf /var/lib/apt/lists/*
-  
-  bash -c "rm -rf /usr/local/src/{DP3,EveryBeam,LOFARBeam,aoflagger,dysco,idg,wsclean,PyBDSF,SpiderScripts,sagecal}/" # DDFacet,killMS
+   # DDFacet
+   cd $SRC
+   git clone --depth 1 -b v0.6.0 https://github.com/saopicc/DDFacet.git
+   cd DDFacet
+   python setup.py install
+ 
+   # killMS
+   cd $SRC
+   git clone --depth 1 -b v3.0.1 https://github.com/saopicc/killMS.git
+   cd killMS
+   python setup.py install
+ 
+   # dynspecMS
+   cd $SRC
+   git clone --depth 1 https://github.com/cyriltasse/DynSpecMS.git
+ 
+   # lotss-query
+   cd $SRC
+   git clone --depth 1 https://github.com/mhardcastle/lotss-query.git
+ 
+   # lotss-hba-survey (not needed for most users)
+   cd $SRC
+   git clone --depth 1 https://github.com/mhardcastle/lotss-hba-survey.git
+ 
+   # ddf-pipeline
+   cd $SRC
+   # git clone --depth 1 https://github.com/mhardcastle/ddf-pipeline.git
+   git clone https://github.com/mhardcastle/ddf-pipeline.git
+   # create the init script
+   ddf-pipeline/scripts/install.sh
+   # catalogs
+   mkdir -p $SRC/catalogs/
+   cd $SRC/catalogs/
+   wget -q --retry-connrefused http://www.oa.uj.edu.pl/A.Kurek/bootstrap-cats.tar # https://github.com/tikk3r/flocs/blob/fedora-py3/singularity/Singularity.intel_mkl#L592
+   tar xvf bootstrap-cats.tar
+   rm -f bootstrap-cats.tar
+ 
+   cd /usr/local/src
+   wget https://rclone.org/install.sh
+   bash install.sh
+ 
+   cd /usr/local/src
+   git clone https://github.com/sara-nl/SpiderScripts.git
+   cd SpiderScripts
+   cp ada/ada /usr/local/bi
+ 
+ 
+   pip list
+ 
+   pip cache purge
+   apt-get purge -y cmake
+   apt-get -y autoremove
+   rm -rf /var/lib/apt/lists/*
+   
+   bash -c "rm -rf /usr/local/src/{DP3,EveryBeam,LOFARBeam,aoflagger,dysco,idg,wsclean,PyBDSF,SpiderScripts,sagecal}/" # DDFacet,killMS
