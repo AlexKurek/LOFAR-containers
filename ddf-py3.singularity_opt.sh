@@ -17,7 +17,7 @@ From: debian:bullseye
    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/
 
    echo "Here we are installing software and other dependencies for the container!"
-   apt-get update
+   apt-get update -q
    apt-get install -y mc \
     git \
     wget \
@@ -139,7 +139,8 @@ From: debian:bullseye
    # https://en.wikichip.org/wiki/intel/xeon_gold/6238 cascadelake
    # https://www.cpu-world.com/CPUs/Xeon/Intel-Xeon%20E5-2640.html ivybridge
    # https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
-   cmake .. -DLIB_ONLY=1 -Wno-dev -DCMAKE_CXX_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -march=cascadelake -mtune=cascadelake' -DCMAKE_C_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -march=cascadelake -mtune=cascadelake'
+   # gcc -Q --help=target 
+   cmake .. -DLIB_ONLY=1 -Wno-dev -DCMAKE_CXX_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -march=native -mtune=native' -DCMAKE_C_FLAGS='-g -O3 -fopenmp -ffast-math -lmvec -lm -march=native -mtune=native'
    make -j $J
    make install
 
@@ -152,7 +153,7 @@ From: debian:bullseye
    cd DP3
    mkdir build
    cd build
-   cmake .. -DLIBDIRAC_PREFIX=/usr/
+   cmake .. -Wno-dev -DCMAKE_CXX_FLAGS='-g -O3 -march=native -mtune=native' -DCMAKE_C_FLAGS='-g -O3 -march=native -mtune=native' -DLIBDIRAC_PREFIX=/usr/
    make -j $J
    make install
 
@@ -175,7 +176,7 @@ From: debian:bullseye
    cd wsclean
    mkdir -p build
    cd build
-   cmake ..
+   cmake .. -Wno-dev -DCMAKE_CXX_FLAGS='-g -O3 -march=native -mtune=native' -DCMAKE_C_FLAGS='-g -O3 -march=native -mtune=native' # https://gitlab.com/aroffringa/wsclean/-/issues/147
    make -j $J
    make install
 
@@ -223,7 +224,7 @@ From: debian:bullseye
    cd /usr/local/src
    git clone https://github.com/sara-nl/SpiderScripts.git
    cd SpiderScripts
-   cp ada/ada /usr/local/bi
+   cp ada/ada /usr/local/bin
  
  
    pip list
